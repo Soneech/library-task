@@ -7,10 +7,12 @@
     <body>
         <div class="books-block">
             <div th:each="book: ${books}">
-                <a th:href="@{/}" th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getYear()}"/>
+                <a th:href="@{/books/{id}(id=${book.getId()})}"
+                   th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getYear()}"/>
             </div>
         </div>
         <hr>
-        <a href="/books/new">Добавить книгу</a>
+        <a href="/books/new">Добавить книгу</a><br>
+        <a href="/"><- На страницу библиотекаря</a>
     </body>
 </html>

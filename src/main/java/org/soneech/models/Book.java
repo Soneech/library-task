@@ -23,7 +23,6 @@ public class Book {
     @Size(min = 2, max = 200, message = "Имя автора должно содержать от 2 до 200 символов")
     private String author;
 
-    @NotEmpty(message = "Укажите год написания книги")
     @Min(value = 1500, message = "Год написания должен быть не меньше, чем 1500")
     private int year;
 }

@@ -19,7 +19,6 @@ public class Person {
     @Size(min = 2, max = 200, message = "Имя должно содержать от 2 до 100 символов")
     private String fullName;
 
-    @NotEmpty(message = "Укажите год рождения")
     @Min(value = 1910, message = "Год рождения должен быть не меньше, чем 1910")
     private int yearOfBirth;
 }
