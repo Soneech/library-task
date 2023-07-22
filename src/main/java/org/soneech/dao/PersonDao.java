@@ -1,5 +1,6 @@
 package org.soneech.dao;
 
+import org.soneech.models.Book;
 import org.soneech.models.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -45,5 +46,10 @@ public class PersonDao {
     public Optional<Person> findByFullName(String fullName) {
         return jdbcTemplate.query("SELECT * FROM Person WHERE full_name=?", new Object[] {fullName},
                 new BeanPropertyRowMapper<>(Person.class)).stream().findAny();
+    }
+
+    public List<Book> findBooksByPersonId(int id) {
+        return jdbcTemplate.query("SELECT * FROM Book WHERE person_id=?", new Object[] {id},
+                new BeanPropertyRowMapper<>(Book.class));
     }
 }

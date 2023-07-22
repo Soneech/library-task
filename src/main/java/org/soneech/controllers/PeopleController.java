@@ -27,7 +27,6 @@ public class PeopleController {
     @GetMapping
     public String peoplePage(Model model) {
         List<Person> personList = personDao.findAll();
-        personList.forEach(System.out::println);
         model.addAttribute("people", personList);
         return "people/people_page";
     }
@@ -40,6 +39,7 @@ public class PeopleController {
     @GetMapping("/{id}")
     public String personPage(@PathVariable int id, Model model) {
         model.addAttribute("person", personDao.findById(id));
+        model.addAttribute("books", personDao.findBooksByPersonId(id));
         return "people/show";
     }
 

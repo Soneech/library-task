@@ -11,7 +11,7 @@
             <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color:red">Title errors</p>
             <br>
 
-            <label for="author">Введите ФИО автора:</label>
+            <label for="author">Введите автора:</label>
             <input type="text" th:field="*{author}" id="author">
             <p th:if="${#fields.hasErrors('author')}" th:errors="*{author}" style="color:red">Author errors</p>
             <br>

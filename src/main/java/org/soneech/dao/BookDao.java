@@ -1,6 +1,7 @@
 package org.soneech.dao;
 
 import org.soneech.models.Book;
+import org.soneech.models.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,5 +47,19 @@ public class BookDao {
         return jdbcTemplate.query("SELECT * FROM Book WHERE title=? AND author=? AND year=? AND id!=?",
                 new Object[] {book.getTitle(), book.getAuthor(), book.getYear(), book.getId()},
                 new BeanPropertyRowMapper<>(Book.class)).stream().findAny();
+    }
+
+    public void assignOwner(int bookId, int personId) {
+        jdbcTemplate.update("UPDATE Book SET person_id=? WHERE id=?", personId, bookId);
+    }
+
+    public Optional<Person> findOwnerByBookId(int id) {
+        return jdbcTemplate.query("SELECT Person.* FROM Person JOIN Book ON Person.id = Book.person_id" +
+                        " WHERE Book.id=?",
+                new Object[] {id}, new BeanPropertyRowMapper<>(Person.class)).stream().findAny();
+    }
+
+    public void releaseBook(int id) {
+        jdbcTemplate.update("UPDATE Book SET person_id=NULL WHERE id=?", id);
     }
 }
