@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class BookDao {
@@ -39,5 +40,11 @@ public class BookDao {
     public Book findById(int id) {
         return jdbcTemplate.query("SELECT * FROM Book WHERE id=?", new Object[] {id},
                 new BeanPropertyRowMapper<>(Book.class)).stream().findAny().orElse(null);
+    }
+
+    public Optional<Book> findDuplicate(Book book) {
+        return jdbcTemplate.query("SELECT * FROM Book WHERE title=? AND author=? AND year=? AND id!=?",
+                new Object[] {book.getTitle(), book.getAuthor(), book.getYear(), book.getId()},
+                new BeanPropertyRowMapper<>(Book.class)).stream().findAny();
     }
 }

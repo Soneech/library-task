@@ -3,6 +3,7 @@ package org.soneech.controllers;
 import jakarta.validation.Valid;
 import org.soneech.dao.PersonDao;
 import org.soneech.models.Person;
+import org.soneech.util.PersonValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +16,12 @@ import java.util.List;
 @RequestMapping("/people")
 public class PeopleController {
     private final PersonDao personDao;
+    private final PersonValidator personValidator;
 
     @Autowired
-    public PeopleController(PersonDao personDao) {
+    public PeopleController(PersonDao personDao, PersonValidator personValidator) {
         this.personDao = personDao;
+        this.personValidator = personValidator;
     }
 
     @GetMapping
@@ -49,6 +52,8 @@ public class PeopleController {
     @PostMapping
     public String createPerson(@ModelAttribute("person") @Valid Person person,
                                BindingResult bindingResult) {
+        personValidator.validate(person, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return "people/new";
         }
@@ -59,6 +64,8 @@ public class PeopleController {
     @PatchMapping("/{id}")
     public String editPerson(@PathVariable("id") int id,
                              @ModelAttribute("person") @Valid Person person, BindingResult bindingResult) {
+        personValidator.validate(person, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return "people/edit";
         }

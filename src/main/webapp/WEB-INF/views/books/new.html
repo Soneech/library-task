@@ -19,7 +19,8 @@
             <label for="year">Введите год написания:</label>
             <input type="text" th:field="*{year}" id="year">
             <p th:if="${#fields.hasErrors('year')}" th:errors="*{year}" style="color:red">Year errors</p>
-            <br>
+
+            <p th:text="${globalError}" style="color:red">Global error</p>
 
             <input type="submit" value="Создать">
         </form>

@@ -3,6 +3,7 @@ package org.soneech.controllers;
 import jakarta.validation.Valid;
 import org.soneech.dao.BookDao;
 import org.soneech.models.Book;
+import org.soneech.util.BookValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/books")
 public class BooksController {
     private final BookDao bookDao;
+    private final BookValidator bookValidator;
 
     @Autowired
-    public BooksController(BookDao bookDao) {
+    public BooksController(BookDao bookDao, BookValidator bookValidator) {
         this.bookDao = bookDao;
+        this.bookValidator = bookValidator;
     }
 
     @GetMapping
@@ -43,8 +46,14 @@ public class BooksController {
     }
 
     @PostMapping
-    public String createBook(@ModelAttribute("book") @Valid Book book, BindingResult bindingResult) {
+    public String createBook(@ModelAttribute("book") @Valid Book book, BindingResult bindingResult, Model model) {
+        bookValidator.validate(book, bindingResult);
+
         if (bindingResult.hasErrors()) {
+            if (bindingResult.hasGlobalErrors()) {
+                String globalError = bindingResult.getGlobalError().getDefaultMessage();
+                model.addAttribute("globalError", globalError);
+            }
             return "books/new";
         }
 
@@ -54,8 +63,15 @@ public class BooksController {
 
     @PatchMapping("/{id}")
     public String editBook(@PathVariable("id") int id,
-                           @ModelAttribute("book") @Valid Book book, BindingResult bindingResult) {
+                           @ModelAttribute("book") @Valid Book book,
+                           BindingResult bindingResult, Model model) {
+        bookValidator.validate(book, bindingResult);
+
         if (bindingResult.hasErrors()) {
+            if (bindingResult.hasGlobalErrors()) {
+                String globalError = bindingResult.getGlobalError().getDefaultMessage();
+                model.addAttribute("globalError", globalError);
+            }
             return "books/edit";
         }
         bookDao.update(id, book);

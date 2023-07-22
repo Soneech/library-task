@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class PersonDao {
@@ -39,5 +40,10 @@ public class PersonDao {
     public Person findById(int id) {
         return jdbcTemplate.query("SELECT * FROM Person WHERE id=?", new Object[] {id},
                 new BeanPropertyRowMapper<>(Person.class)).stream().findAny().orElse(null);
+    }
+
+    public Optional<Person> findByFullName(String fullName) {
+        return jdbcTemplate.query("SELECT * FROM Person WHERE full_name=?", new Object[] {fullName},
+                new BeanPropertyRowMapper<>(Person.class)).stream().findAny();
     }
 }
