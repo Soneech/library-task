@@ -1,8 +1,9 @@
-package org.soneech.controllers;
+package org.soneech.controller;
 
 import jakarta.validation.Valid;
-import org.soneech.dao.PersonDao;
-import org.soneech.models.Person;
+import org.soneech.model.Book;
+import org.soneech.model.Person;
+import org.soneech.service.PersonService;
 import org.soneech.util.PersonValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,22 +12,23 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/people")
-public class PeopleController {
-    private final PersonDao personDao;
+public class PersonController {
+    private final PersonService personService;
     private final PersonValidator personValidator;
 
     @Autowired
-    public PeopleController(PersonDao personDao, PersonValidator personValidator) {
-        this.personDao = personDao;
+    public PersonController(PersonService personService, PersonValidator personValidator) {
+        this.personService = personService;
         this.personValidator = personValidator;
     }
 
     @GetMapping
     public String peoplePage(Model model) {
-        List<Person> personList = personDao.findAll();
+        List<Person> personList = personService.findAll();
         model.addAttribute("people", personList);
         return "people/people_page";
     }
@@ -36,16 +38,35 @@ public class PeopleController {
         return "people/new";
     }
 
+    public void setErrorMessage(Model model) {
+        model.addAttribute("error_message", "Нет такого читателя!");
+    }
+
     @GetMapping("/{id}")
     public String personPage(@PathVariable int id, Model model) {
-        model.addAttribute("person", personDao.findById(id));
-        model.addAttribute("books", personDao.findBooksByPersonId(id));
+        Optional<Person> person = personService.findById(id);
+
+        if (person.isPresent()) {
+            model.addAttribute("person", person.get());
+
+            List<Book> books = personService.getBooksByPersonId(id);
+            model.addAttribute("books", books);
+        }
+        else {
+            setErrorMessage(model);
+        }
         return "people/show";
     }
 
     @GetMapping("/{id}/edit")
     public String editPage(@PathVariable("id") int id, Model model) {
-        model.addAttribute("person", personDao.findById(id));
+        Optional<Person> person = personService.findById(id);
+        if (person.isPresent()) {
+            model.addAttribute("person", person.get());
+        }
+        else {
+            setErrorMessage(model);
+        }
         return "people/edit";
     }
 
@@ -57,7 +78,7 @@ public class PeopleController {
         if (bindingResult.hasErrors()) {
             return "people/new";
         }
-        personDao.save(person);
+        personService.save(person);
         return "redirect:/people";
     }
 
@@ -69,13 +90,13 @@ public class PeopleController {
         if (bindingResult.hasErrors()) {
             return "people/edit";
         }
-        personDao.update(id, person);
+        personService.update(id, person);
         return "redirect:/people";
     }
 
     @DeleteMapping("/{id}")
     public String deletePerson(@PathVariable("id") int id) {
-        personDao.delete(id);
+        personService.delete(id);
         return "redirect:/people";
     }
 }

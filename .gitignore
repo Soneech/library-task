@@ -3,7 +3,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-src/main/resources/database.properties
+/src/main/resources/hibernate.properties
+/.idea/dbnavigator.xml
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

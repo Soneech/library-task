@@ -5,19 +5,23 @@
         <title>Редактирование</title>
     </head>
     <body>
-        <form th:method="PATCH" th:action="@{/people/{id}(id=${person.getId()})}" th:object="${person}">
-            <label for="full_name">Введите ФИО:</label>
-            <input type="text" th:field="*{fullName}" id="full_name">
-            <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" style="color:red">Full name errors</p>
-            <br>
+        <div th:if="${person}">
+            <form th:method="PATCH" th:action="@{/people/{id}(id=${person.getId()})}" th:object="${person}">
+                <label for="full_name">Введите ФИО:</label>
+                <input type="text" th:field="*{fullName}" id="full_name">
+                <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" style="color:red">Full name errors</p>
+                <br>
 
-            <label for="year_of_birth">Введите год рождения:</label>
-            <input type="text" th:field="*{yearOfBirth}" id="year_of_birth">
-            <p th:if="${#fields.hasErrors('yearOfBirth')}"
-               th:errors="*{yearOfBirth}" style="color:red">Year of birth errors</p>
-            <br>
+                <label for="year_of_birth">Введите год рождения:</label>
+                <input type="text" th:field="*{yearOfBirth}" id="year_of_birth">
+                <p th:if="${#fields.hasErrors('yearOfBirth')}"
+                   th:errors="*{yearOfBirth}" style="color:red">Year of birth errors</p>
+                <br>
 
-            <input type="submit" value="Сохранить">
-        </form>
+                <input type="submit" value="Сохранить">
+            </form>
+        </div>
+
+        <p th:text="${error_message}"></p>
     </body>
 </html>

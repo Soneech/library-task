@@ -5,26 +5,30 @@
         <title>Читатель</title>
     </head>
     <body>
-        <p th:text="${person.getFullName() + ', ' + person.getYearOfBirth()}"></p>
+        <div th:if="${person}">
+            <p th:text="${person.getFullName() + ', ' + person.getYearOfBirth()}"></p>
 
-        <div th:if="${books.isEmpty()}">
-            <p>Человек пока не взял ни одной книги</p>
-        </div>
-        <div th:unless="${books.isEmpty()}"> <!-- else -->
+            <div th:if="${books.isEmpty()}">
+                <p>Человек пока не взял ни одной книги</p>
+            </div>
+            <div th:unless="${books.isEmpty()}"> <!-- else -->
+                <hr>
+                <b><p>Книги:</p></b>
+                <p th:each="book: ${books}">
+                    <a th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getYear()}"
+                       th:href="@{/books/{id}(id=${book.getId()})}"></a>
+                </p>
+            </div>
+
             <hr>
-            <b><p>Книги:</p></b>
-            <p th:each="book: ${books}">
-                <a th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getYear()}"
-                   th:href="@{/books/{id}(id=${book.getId()})}"></a>
-            </p>
+            <a th:href="@{/people/{id}/edit(id=${person.getId()})}">
+                <input type="button" value="Редактировать">
+            </a>
+            <form th:method="DELETE" th:action="@{/people/{id}(id=${person.getId()})}">
+                <input type="submit" value="Удалить">
+            </form>
         </div>
-        <hr>
 
-        <a th:href="@{/people/{id}/edit(id=${person.getId()})}">
-            <input type="button" value="Редактировать">
-        </a>
-        <form th:method="DELETE" th:action="@{/people/{id}(id=${person.getId()})}">
-            <input type="submit" value="Удалить">
-        </form>
+        <p th:text="${error_message}"></p>
     </body>
 </html>

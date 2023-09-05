@@ -5,24 +5,28 @@
         <title>Редактирование</title>
     </head>
     <body>
-        <form th:method="PATCH" th:action="@{/books/{id}(id=${book.getId()})}" th:object="${book}">
-            <label for="title">Введите название книги:</label>
-            <input type="text" th:field="*{title}" id="title">
-            <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color:red">Title errors</p>
-            <br>
+        <div th:if="${book}">
+            <form th:method="PATCH" th:action="@{/books/{id}(id=${book.getId()})}" th:object="${book}">
+                <label for="title">Введите название книги:</label>
+                <input type="text" th:field="*{title}" id="title">
+                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color:red">Title errors</p>
+                <br>
 
-            <label for="author">Введите автора:</label>
-            <input type="text" th:field="*{author}" id="author">
-            <p th:if="${#fields.hasErrors('author')}" th:errors="*{author}" style="color:red">Author errors</p>
-            <br>
+                <label for="author">Введите автора:</label>
+                <input type="text" th:field="*{author}" id="author">
+                <p th:if="${#fields.hasErrors('author')}" th:errors="*{author}" style="color:red">Author errors</p>
+                <br>
 
-            <label for="year">Введите год написания:</label>
-            <input type="text" th:field="*{year}" id="year">
-            <p th:if="${#fields.hasErrors('year')}" th:errors="*{year}" style="color:red">Year errors</p>
+                <label for="year">Введите год написания:</label>
+                <input type="text" th:field="*{year}" id="year">
+                <p th:if="${#fields.hasErrors('year')}" th:errors="*{year}" style="color:red">Year errors</p>
 
-            <p th:text="${globalError}" style="color:red">Global error</p>
+                <p th:text="${globalError}" style="color:red">Global error</p>
 
-            <input type="submit" value="Сохранить">
-        </form>
+                <input type="submit" value="Сохранить">
+            </form>
+        </div>
+
+        <p th:text="${error_message}"></p>
     </body>
 </html>
