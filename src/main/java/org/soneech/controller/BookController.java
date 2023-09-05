@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -29,8 +30,19 @@ public class BookController {
     }
 
     @GetMapping
-    public String booksPage(Model model) {
-        model.addAttribute("books", bookService.findAll());
+    public String booksPage(Model model,
+                            @RequestParam(required = false) Integer page,
+                            @RequestParam(required = false, value = "books_per_page") Integer booksPerPage,
+                            @RequestParam(required = false, value = "sort_by_year") boolean sortByYear) {
+        List<Book> books;
+        if (page == null || booksPerPage == null) {
+            books = bookService.findAll(sortByYear);
+        }
+        else {
+            books = bookService.findWithPagination(sortByYear, page, booksPerPage);
+        }
+
+        model.addAttribute("books", books);
         return "books/books_page";
     }
 
@@ -80,11 +92,9 @@ public class BookController {
                              BindingResult bindingResult, Model model) {
         bookValidator.validate(book, bindingResult);
 
-        if (bindingResult.hasErrors()) {
-            if (bindingResult.hasGlobalErrors()) {
-                String globalError = bindingResult.getGlobalError().getDefaultMessage();
-                model.addAttribute("globalError", globalError);
-            }
+        if (bindingResult.hasGlobalErrors()) {
+            String globalError = bindingResult.getGlobalError().getDefaultMessage();
+            model.addAttribute("globalError", globalError);
             return "books/new";
         }
 
