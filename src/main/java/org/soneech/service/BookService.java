@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,6 +64,7 @@ public class BookService {
         Optional<Book> book = bookRepository.findById(bookId);
         if (book.isPresent()) {
             book.get().setOwner(owner);
+            book.get().setTakenAt(new Date());
         }
     }
 
@@ -71,10 +73,15 @@ public class BookService {
         Optional<Book> book = bookRepository.findById(bookId);
         if (book.isPresent()) {
             book.get().setOwner(null);
+            book.get().setTakenAt(null);
         }
     }
 
     public Optional<Book> findDuplicate(Book book) {
         return bookRepository.findByTitleAndAuthorAndYear(book.getTitle(), book.getAuthor(), book.getYear());
+    }
+
+    public List<Book> findBooksByTitleStartingWith(String titlePart) {
+        return bookRepository.findByTitleStartingWith(titlePart);
     }
 }

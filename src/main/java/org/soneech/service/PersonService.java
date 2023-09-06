@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional(readOnly = true)
@@ -54,8 +56,18 @@ public class PersonService {
         Optional<Person> person = personRepository.findById(id);
         if (person.isPresent()) {
             Hibernate.initialize(person.get().getBooks());
-            return person.get().getBooks();
+            List<Book> books = person.get().getBooks();
+
+            for (Book book: books) {
+                long difference = new Date().getTime() - book.getTakenAt().getTime();
+                long days = TimeUnit.MILLISECONDS.toDays(difference);
+                if (days > 10) {
+                    book.setExpired(true);
+                }
+            }
+            return books;
         }
+
         return Collections.emptyList();
     }
 }

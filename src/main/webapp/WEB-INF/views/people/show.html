@@ -16,7 +16,8 @@
                 <b><p>Книги:</p></b>
                 <p th:each="book: ${books}">
                     <a th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getYear()}"
-                       th:href="@{/books/{id}(id=${book.getId()})}"></a>
+                       th:href="@{/books/{id}(id=${book.getId()})}"
+                       th:style="${book.isExpired() ? 'color:red' : ''}"></a>
                 </p>
             </div>
 

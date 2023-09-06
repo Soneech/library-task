@@ -32,8 +32,8 @@ public class BookController {
     @GetMapping
     public String booksPage(Model model,
                             @RequestParam(required = false) Integer page,
-                            @RequestParam(required = false, value = "books_per_page") Integer booksPerPage,
-                            @RequestParam(required = false, value = "sort_by_year") boolean sortByYear) {
+                            @RequestParam(required = false, name = "books_per_page") Integer booksPerPage,
+                            @RequestParam(required = false, name = "sort_by_year") boolean sortByYear) {
         List<Book> books;
         if (page == null || booksPerPage == null) {
             books = bookService.findAll(sortByYear);
@@ -135,5 +135,19 @@ public class BookController {
     public String releaseBook(@PathVariable("id") int id) {
         bookService.releaseBook(id);
         return "redirect:/books/" + id;
+    }
+
+    @GetMapping("/search")
+    public String searchPage() {
+        return "books/search";
+    }
+
+    @PostMapping("/search")
+    public String bookSearching(@RequestParam(name = "search_query") String searchQuery, Model model) {
+        List<Book> books = bookService.findBooksByTitleStartingWith(searchQuery);
+        books.forEach(System.out::println);
+        model.addAttribute("books", bookService.findBooksByTitleStartingWith(searchQuery));
+
+        return "books/search";
     }
 }

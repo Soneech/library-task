@@ -14,6 +14,7 @@
                     Книга сейчас у:
                     <a th:href="@{/people/{id}(id=${owner.getId()})}" th:text="${owner.getFullName()}"></a>
                 </p>
+                <p th:text="${'Взята в: ' + book.getTakenAt()}"></p>
 
                 <form th:method="PATCH" th:action="@{/books/{id}/release(id=${book.getId()})}">
                     <input type="submit" value="Освободить книгу">
